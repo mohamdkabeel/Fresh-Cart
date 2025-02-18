@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+
+
+
+
+body {
+  background-image: url('./assets/light-patten.ed706aff39a009de4e8001ed31f5a17c.svg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  margin: 0%;
+  padding: 0%;
+}
+
+
+.navbar {
+  width: 100%;
+}
+
+.register {
+  font-family: "Encode Sans Expanded", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 28px;
+  color: #212529;
+}
+
+form .input {
+
+  font-family: "Encode Sans Expanded", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.product:hover .btn {
+  opacity: 1;
+  transform: translateY(0%);
+}
+
+.product .btn {
+  transition: 1s, opacity 1s ease-in-out;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+/*  
+.cokak{
+  color: #4fa94d;
+} */
+
+.row .img {
+  width: 38%;
+
+}
+
+h2 {
+  font-family: "Encode Sans Expanded", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 33.3px;
+  font-size: 28px;
+  color: #212529;
+}
+
+.row .details .caption p {
+  font-family: "Encode Sans Expanded", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  line-height: 33.3px;
+}
+
+.category-img {
+  height: 200px;
+}
+
+.slick-prev,
+.slick-next {
+  color: green !important;
+  /* تغيير لون الأسهم */
+  /* تكبير الحجم لو حابب */
+}
+
+.slick-prev::before,
+.slick-next::before {
+  color: green !important;
+  /* تغيير لون الأيقونة */
+}
+
+.brand-list-container {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.brand-list-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.brand-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.brand-item {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  color: #555;
+}
+
+.brand-item:hover {
+  background-color: #f1f1f1;
+}
+
+.card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  /* margin-bottom: 10px; */
+  border-radius: 5px;
+  font-size: 18px;
+  /* color: #555; */
+  /* width: 25%; */
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.items-center .relative {
+  position: relative;
+  padding: 15px;
+}
+
+.items-center li span {
+  position: absolute;
+  top: 0%;
+  right: 1%;
+  left: auto;
+  font-size: small;
+  background-color: rgb(30, 210, 36);
+
+}
+
+.heart-remove {
+  color: #d12942;
+}
+
+.heart-remove:hover {
+  color: #dc3545 !important;
+}
+
+
+
+.heart:hover {
+  /* box-shadow: var(--shadow) !important; */
+}
+
+@media screen and (max-width: 900px) {
+  .drop-down-order {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .main-img-slide {
+    height: 250px;
+  }
+
+  nav .badge {
+    right: auto !important;
+  }
+
+  .product .btn {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .category-img-slide {
+    height: 300px;
+  }
+}
