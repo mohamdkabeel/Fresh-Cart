@@ -18,10 +18,7 @@ fresh-cart-wine-seven.vercel.app )
 - **Frontend:** React, React Router, Context API  
 - **Styling:** Tailwind CSS / Sass  
 - **State Management:** Redux Toolkit / Context API  
-- **Backend:** Node.js, Express (if applicable)  
-- **Database:** MongoDB / Firebase (if applicable)  
 - **Deployment:** Vercel  
 
-## 🛠️ Installation & Setup
-Follow these steps to run the project locally:
+
 
