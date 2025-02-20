@@ -77,7 +77,7 @@ export default function Cart() {
     }
 
     return <>
-        <div className="relative mt-[7%] overflow-x-auto my-5 shadow-md sm:rounded-lg">
+        <div className="relative mt-20 md:mt-[5%] overflow-x-auto my-5 shadow-md sm:rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-500 dark:text-gray-100">
                     <tr>
@@ -88,7 +88,7 @@ export default function Cart() {
                             Product
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Qty
+                            Quantity
                         </th>
                         <th scope="col" className="px-6 py-3">
                             Price

@@ -49,7 +49,7 @@ export default function Register() {
     }, [])
 
     return <>
-        <div className="container mt-[10%]">
+        <div className="container mt-20 ">
             <form onSubmit={formik.handleSubmit} className=' mb-5 w-[65%]  mx-auto mt-7'>
                 <div className="caption ml-0 pl-0">
                     <h1 className='mt-1 register text-3xl'>

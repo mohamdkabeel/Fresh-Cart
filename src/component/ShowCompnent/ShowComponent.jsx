@@ -110,7 +110,7 @@ export default function ShowComponent() {
     }, [])
 
     return (
-        <div className="container px-10 mx-auto">
+        <div className="container px-10">
             <div className="row flex flex-wrap py-8 items-center">
                 {products.map((product) => (
                     <div key={product.id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 px-2 py-5">

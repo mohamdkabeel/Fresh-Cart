@@ -45,8 +45,8 @@ export default function Login() {
     useEffect(() => { document.title = "LOGIN" }, [])
 
     return (
-        <div className="container mt-[10%] px-4">
-            <form onSubmit={formik.handleSubmit} className='mb-5 w-full md:w-[65%] max-w-md mx-auto mt-7'>
+        <div className="container mt-20 flex justify-center items-center px-4">
+            <form onSubmit={formik.handleSubmit} className='mb-5 w-full md:w-[65%] max-w-md mt-auto mt-7'>
                 <div className="caption">
                     <h1 className='mt-1 register text-3xl text-center md:text-left'>
                         Login Now :

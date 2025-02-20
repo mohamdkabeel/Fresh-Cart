@@ -14,7 +14,7 @@ export default function Brands() {
     }, []);
 
     return (
-        <div className="container mt-[10%]">
+        <div className="container mt-20 md:mt-[5%]">
             <h2 className='flex justify-center items-center mb-4 text-2xl font-bold'>All Brands</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

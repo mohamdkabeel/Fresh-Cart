@@ -57,7 +57,7 @@ export default function Navbar() {
                         </ul>
                     )}
 
-                    <div className="flex items-center">
+                    <div className="flex items-center ">
                         {userToken && (
                             <ul className="hidden md:flex items-center">
                                 <li className="px-3">

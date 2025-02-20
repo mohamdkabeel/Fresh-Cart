@@ -15,7 +15,7 @@ export default function MainSlider() {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-4 mx-4 md:mx-10 px-4 md:px-10 mt-[5%] gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-4 mx-4 md:mx-10 px-4 md:px-10 mt-20 md:mt-[5%] gap-0">
             <div className="md:col-span-3">
                 <Slider {...settings}>
                     <img src={mainSlider} className='w-full h-auto md:h-[400px]' />
