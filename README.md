@@ -1,8 +1,27 @@
-# React + Vite
+# 🛒 E-Commerce Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Overview
+This is a fully responsive e-commerce website built with **React, React Router, and Context API**. It provides a smooth shopping experience with features like product listing, cart management, and checkout.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
+🔗 [Live demo](
+fresh-cart-wine-seven.vercel.app )
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🎯 Features
+✅ User authentication (Login & Register)  
+✅ Product listing & filtering  
+✅ Shopping cart functionality  
+✅ Responsive UI/UX design  
+✅ Secure checkout process  
+
+## 🛠️ Tech Stack
+- **Frontend:** React, React Router, Context API  
+- **Styling:** Tailwind CSS / Sass  
+- **State Management:** Redux Toolkit / Context API  
+- **Backend:** Node.js, Express (if applicable)  
+- **Database:** MongoDB / Firebase (if applicable)  
+- **Deployment:** Vercel  
+
+## 🛠️ Installation & Setup
+Follow these steps to run the project locally:
+
