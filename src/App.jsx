@@ -18,6 +18,7 @@ import Spinner from './component/Spinner/Spinner'
 import CheckOut from './component/CheckOut/CheckOut'
 import NOfount from './component/NOfount/NOfount'
 import WishList from './component/Wishlist/Wishlist'
+import ChatWidget from './component/ChatWidget/ChatWidget'
 
 export default function App() {
     let x = createBrowserRouter([
