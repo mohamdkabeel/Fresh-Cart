@@ -13,7 +13,7 @@ export default function ChatWidget() {
         setMessages([...messages, { role: "user", text: userMsg }]);
         setInput("");
 
-        const res = await fetch("https://chatbotai-wypy.onrender.com/Chat", {
+        const res = await fetch("https://chatbotai-wypy.onrender.com/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
