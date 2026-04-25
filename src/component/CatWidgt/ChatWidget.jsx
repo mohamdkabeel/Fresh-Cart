@@ -21,22 +21,13 @@ export default function ChatWidget() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    client_id: "ecommerce_site",
-                    message: userMsg,
-                    history: messages
-                        .filter(m => m.role === "user" || m.role === "bot")
-                        .map((m, i, arr) => {
-                            if (m.role === "user") {
-                                return {
-                                    user: m.text,
-                                    bot: arr[i + 1]?.text || ""
-                                };
-                            }
-                            return null;
-                        })
-                        .filter(Boolean)
+                    client_id: "test",
+                    message: "hello",
+                    history: []
                 })
-            });
+            })
+                .then(res => res.json())
+                .then(data => console.log(data));
 
             const data = await res.json();
 
