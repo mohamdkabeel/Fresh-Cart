@@ -23,111 +23,123 @@ export default function ChatWidget() {
                 body: JSON.stringify({
                     client_id: "ecommerce_site",
                     message: userMsg,
-                    history: []
+                    history: messages
+                        .filter(m => m.role === "user" || m.role === "bot")
+                        .map((m, i, arr) => {
+                            if (m.role === "user") {
+                                return {
+                                    user: m.text,
+                                    bot: arr[i + 1]?.text || ""
+                                };
+                            }
+                            return null;
+                        })
+                        .filter(Boolean)
                 })
-            });
+            })
+        });
 
-            const data = await res.json();
+        const data = await res.json();
 
-            console.log("API RESPONSE:", data);
+        console.log("API RESPONSE:", data);
 
-            // لو في error من الباك
-            if (data.error) {
-                setMessages(prev => [
-                    ...prev,
-                    { role: "bot", text: "❌ " + data.error }
-                ]);
-            } else {
-                setMessages(prev => [
-                    ...prev,
-                    { role: "bot", text: data.bot_response || "🤖 مفيش رد من البوت" }
-                ]);
-            }
-
-        } catch (err) {
+        // لو في error من الباك
+        if (data.error) {
             setMessages(prev => [
                 ...prev,
-                { role: "bot", text: "❌ حصل خطأ في الاتصال بالسيرفر" }
+                { role: "bot", text: " " + data.error }
+            ]);
+        } else {
+            setMessages(prev => [
+                ...prev,
+                { role: "bot", text: data.bot_response || " مفيش رد من البوت" }
             ]);
         }
 
-        setLoading(false);
-    };
+    } catch (err) {
+        setMessages(prev => [
+            ...prev,
+            { role: "bot", text: " حصل خطأ في الاتصال بالسيرفر" }
+        ]);
+    }
 
-    return (
-        <>
-            {/* زرار الشات */}
+    setLoading(false);
+};
+
+return (
+    <>
+        {/* زرار الشات */}
+        <div
+            onClick={() => setOpen(!open)}
+            style={{
+                position: "fixed",
+                bottom: 20,
+                right: 20,
+                width: 55,
+                height: 55,
+                borderRadius: "50%",
+                background: "#111",
+                color: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                zIndex: 9999
+            }}
+        >
+            💬
+        </div>
+
+        {/* نافذة الشات */}
+        {open && (
             <div
-                onClick={() => setOpen(!open)}
                 style={{
                     position: "fixed",
-                    bottom: 20,
+                    bottom: 90,
                     right: 20,
-                    width: 55,
-                    height: 55,
-                    borderRadius: "50%",
-                    background: "#111",
-                    color: "#fff",
+                    width: 320,
+                    height: 420,
+                    background: "#fff",
+                    borderRadius: 12,
+                    boxShadow: "0 0 20px rgba(0,0,0,0.2)",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
+                    flexDirection: "column",
                     zIndex: 9999
                 }}
             >
-                💬
-            </div>
-
-            {/* نافذة الشات */}
-            {open && (
-                <div
-                    style={{
-                        position: "fixed",
-                        bottom: 90,
-                        right: 20,
-                        width: 320,
-                        height: 420,
-                        background: "#fff",
-                        borderRadius: 12,
-                        boxShadow: "0 0 20px rgba(0,0,0,0.2)",
-                        display: "flex",
-                        flexDirection: "column",
-                        zIndex: 9999
-                    }}
-                >
-                    {/* Header */}
-                    <div style={{
-                        background: "#111",
-                        color: "#fff",
-                        padding: 10,
-                        fontWeight: "bold"
-                    }}>
-                        AI Assistant
-                    </div>
-
-                    {/* Messages */}
-                    <div style={{ flex: 1, padding: 10, overflowY: "auto" }}>
-                        {messages.map((m, i) => (
-                            <div key={i} style={{ marginBottom: 8 }}>
-                                <b>{m.role === "user" ? "You" : "Bot"}:</b> {m.text}
-                            </div>
-                        ))}
-
-                        {loading && <div>🤖 Typing...</div>}
-                    </div>
-
-                    {/* Input */}
-                    <div style={{ display: "flex", borderTop: "1px solid #ddd" }}>
-                        <input
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            style={{ flex: 1, padding: 10, border: "none" }}
-                            placeholder="Type..."
-                        />
-                        <button onClick={sendMessage}>Send</button>
-                    </div>
+                {/* Header */}
+                <div style={{
+                    background: "#111",
+                    color: "#fff",
+                    padding: 10,
+                    fontWeight: "bold"
+                }}>
+                    AI Assistant
                 </div>
-            )}
-        </>
-    );
+
+                {/* Messages */}
+                <div style={{ flex: 1, padding: 10, overflowY: "auto" }}>
+                    {messages.map((m, i) => (
+                        <div key={i} style={{ marginBottom: 8 }}>
+                            <b>{m.role === "user" ? "You" : "Bot"}:</b> {m.text}
+                        </div>
+                    ))}
+
+                    {loading && <div> Typing...</div>}
+                </div>
+
+                {/* Input */}
+                <div style={{ display: "flex", borderTop: "1px solid #ddd" }}>
+                    <input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        style={{ flex: 1, padding: 10, border: "none" }}
+                        placeholder="Type..."
+                    />
+                    <button onClick={sendMessage}>Send</button>
+                </div>
+            </div>
+        )}
+    </>
+);
 }
