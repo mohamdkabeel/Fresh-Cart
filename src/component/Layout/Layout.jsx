@@ -5,7 +5,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import '../../index.css'
 import { ClipLoader } from 'react-spinners'
 import { Hearts } from "react-loader-spinner";
-import ChatWidget from './component/ChatWidget/ChatWidget'
+import ChatWidget from './component/CatWidget/ChatWidget'
 
 
 export default function Layout() {
