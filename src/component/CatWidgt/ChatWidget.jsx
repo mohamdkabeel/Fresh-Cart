@@ -11,7 +11,6 @@ export default function ChatWidget() {
 
         const userMsg = input;
 
-        // ضيف رسالة اليوزر
         setMessages(prev => [...prev, { role: "user", text: userMsg }]);
         setInput("");
         setLoading(true);
@@ -22,35 +21,40 @@ export default function ChatWidget() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     client_id: "test",
-                    message: "hello",
-                    history: []
+                    message: userMsg,
+                    history: messages
+                        .filter(m => m.role === "user" || m.role === "bot")
+                        .map((m, i, arr) => {
+                            if (m.role === "user") {
+                                return {
+                                    user: m.text,
+                                    bot: arr[i + 1]?.text || ""
+                                };
+                            }
+                            return null;
+                        })
+                        .filter(Boolean)
                 })
-            })
-                .then(res => res.json())
-                .then(data => console.log(data));
-            const text = await res.text();
-            console.log("RAW RESPONSE:", text);
+            });
+
             const data = await res.json();
 
-            console.log("API RESPONSE:", data);
-
-            // لو في error من الباك
             if (data.error) {
                 setMessages(prev => [
                     ...prev,
-                    { role: "bot", text: " " + data.error }
+                    { role: "bot", text: data.error }
                 ]);
             } else {
                 setMessages(prev => [
                     ...prev,
-                    { role: "bot", text: data.bot_response || " مفيش رد من البوت" }
+                    { role: "bot", text: data.bot_response || "مفيش رد" }
                 ]);
             }
 
         } catch (err) {
             setMessages(prev => [
                 ...prev,
-                { role: "bot", text: " حصل خطأ في الاتصال بالسيرفر" }
+                { role: "bot", text: "حصل خطأ" }
             ]);
         }
 
@@ -59,7 +63,6 @@ export default function ChatWidget() {
 
     return (
         <>
-            {/* زرار الشات */}
             <div
                 onClick={() => setOpen(!open)}
                 style={{
@@ -81,7 +84,6 @@ export default function ChatWidget() {
                 💬
             </div>
 
-            {/* نافذة الشات */}
             {open && (
                 <div
                     style={{
@@ -98,7 +100,6 @@ export default function ChatWidget() {
                         zIndex: 9999
                     }}
                 >
-                    {/* Header */}
                     <div style={{
                         background: "#111",
                         color: "#fff",
@@ -108,7 +109,6 @@ export default function ChatWidget() {
                         AI Assistant
                     </div>
 
-                    {/* Messages */}
                     <div style={{ flex: 1, padding: 10, overflowY: "auto" }}>
                         {messages.map((m, i) => (
                             <div key={i} style={{ marginBottom: 8 }}>
@@ -116,10 +116,9 @@ export default function ChatWidget() {
                             </div>
                         ))}
 
-                        {loading && <div> Typing...</div>}
+                        {loading && <div>Typing...</div>}
                     </div>
 
-                    {/* Input */}
                     <div style={{ display: "flex", borderTop: "1px solid #ddd" }}>
                         <input
                             value={input}
