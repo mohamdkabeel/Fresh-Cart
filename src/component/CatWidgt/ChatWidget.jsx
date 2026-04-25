@@ -4,31 +4,54 @@ export default function ChatWidget() {
     const [open, setOpen] = useState(false);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const sendMessage = async () => {
-        if (!input) return;
+        if (!input.trim()) return;
 
         const userMsg = input;
 
-        setMessages([...messages, { role: "user", text: userMsg }]);
+        // ضيف رسالة اليوزر
+        setMessages(prev => [...prev, { role: "user", text: userMsg }]);
         setInput("");
+        setLoading(true);
 
-        const res = await fetch("https://chatbotai-wypy.onrender.com/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                client_id: "ecommerce_site",
-                message: userMsg,
-                history: []
-            })
-        });
+        try {
+            const res = await fetch("https://chatbotai-wypy.onrender.com/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    client_id: "ecommerce_site",
+                    message: userMsg,
+                    history: []
+                })
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        setMessages(prev => [
-            ...prev,
-            { role: "bot", text: data.bot_response }
-        ]);
+            console.log("API RESPONSE:", data);
+
+            // لو في error من الباك
+            if (data.error) {
+                setMessages(prev => [
+                    ...prev,
+                    { role: "bot", text: "❌ " + data.error }
+                ]);
+            } else {
+                setMessages(prev => [
+                    ...prev,
+                    { role: "bot", text: data.bot_response || "🤖 مفيش رد من البوت" }
+                ]);
+            }
+
+        } catch (err) {
+            setMessages(prev => [
+                ...prev,
+                { role: "bot", text: "❌ حصل خطأ في الاتصال بالسيرفر" }
+            ]);
+        }
+
+        setLoading(false);
     };
 
     return (
@@ -89,6 +112,8 @@ export default function ChatWidget() {
                                 <b>{m.role === "user" ? "You" : "Bot"}:</b> {m.text}
                             </div>
                         ))}
+
+                        {loading && <div>🤖 Typing...</div>}
                     </div>
 
                     {/* Input */}
