@@ -28,7 +28,8 @@ export default function ChatWidget() {
             })
                 .then(res => res.json())
                 .then(data => console.log(data));
-
+            const text = await res.text();
+            console.log("RAW RESPONSE:", text);
             const data = await res.json();
 
             console.log("API RESPONSE:", data);
