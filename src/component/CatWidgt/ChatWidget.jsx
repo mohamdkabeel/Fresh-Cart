@@ -36,110 +36,109 @@ export default function ChatWidget() {
                         })
                         .filter(Boolean)
                 })
-            })
-        });
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        console.log("API RESPONSE:", data);
+            console.log("API RESPONSE:", data);
 
-        // لو في error من الباك
-        if (data.error) {
+            // لو في error من الباك
+            if (data.error) {
+                setMessages(prev => [
+                    ...prev,
+                    { role: "bot", text: " " + data.error }
+                ]);
+            } else {
+                setMessages(prev => [
+                    ...prev,
+                    { role: "bot", text: data.bot_response || " مفيش رد من البوت" }
+                ]);
+            }
+
+        } catch (err) {
             setMessages(prev => [
                 ...prev,
-                { role: "bot", text: " " + data.error }
-            ]);
-        } else {
-            setMessages(prev => [
-                ...prev,
-                { role: "bot", text: data.bot_response || " مفيش رد من البوت" }
+                { role: "bot", text: " حصل خطأ في الاتصال بالسيرفر" }
             ]);
         }
 
-    } catch (err) {
-        setMessages(prev => [
-            ...prev,
-            { role: "bot", text: " حصل خطأ في الاتصال بالسيرفر" }
-        ]);
-    }
+        setLoading(false);
+    };
 
-    setLoading(false);
-};
-
-return (
-    <>
-        {/* زرار الشات */}
-        <div
-            onClick={() => setOpen(!open)}
-            style={{
-                position: "fixed",
-                bottom: 20,
-                right: 20,
-                width: 55,
-                height: 55,
-                borderRadius: "50%",
-                background: "#111",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                zIndex: 9999
-            }}
-        >
-            💬
-        </div>
-
-        {/* نافذة الشات */}
-        {open && (
+    return (
+        <>
+            {/* زرار الشات */}
             <div
+                onClick={() => setOpen(!open)}
                 style={{
                     position: "fixed",
-                    bottom: 90,
+                    bottom: 20,
                     right: 20,
-                    width: 320,
-                    height: 420,
-                    background: "#fff",
-                    borderRadius: 12,
-                    boxShadow: "0 0 20px rgba(0,0,0,0.2)",
+                    width: 55,
+                    height: 55,
+                    borderRadius: "50%",
+                    background: "#111",
+                    color: "#fff",
                     display: "flex",
-                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
                     zIndex: 9999
                 }}
             >
-                {/* Header */}
-                <div style={{
-                    background: "#111",
-                    color: "#fff",
-                    padding: 10,
-                    fontWeight: "bold"
-                }}>
-                    AI Assistant
-                </div>
-
-                {/* Messages */}
-                <div style={{ flex: 1, padding: 10, overflowY: "auto" }}>
-                    {messages.map((m, i) => (
-                        <div key={i} style={{ marginBottom: 8 }}>
-                            <b>{m.role === "user" ? "You" : "Bot"}:</b> {m.text}
-                        </div>
-                    ))}
-
-                    {loading && <div> Typing...</div>}
-                </div>
-
-                {/* Input */}
-                <div style={{ display: "flex", borderTop: "1px solid #ddd" }}>
-                    <input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        style={{ flex: 1, padding: 10, border: "none" }}
-                        placeholder="Type..."
-                    />
-                    <button onClick={sendMessage}>Send</button>
-                </div>
+                💬
             </div>
-        )}
-    </>
-);
+
+            {/* نافذة الشات */}
+            {open && (
+                <div
+                    style={{
+                        position: "fixed",
+                        bottom: 90,
+                        right: 20,
+                        width: 320,
+                        height: 420,
+                        background: "#fff",
+                        borderRadius: 12,
+                        boxShadow: "0 0 20px rgba(0,0,0,0.2)",
+                        display: "flex",
+                        flexDirection: "column",
+                        zIndex: 9999
+                    }}
+                >
+                    {/* Header */}
+                    <div style={{
+                        background: "#111",
+                        color: "#fff",
+                        padding: 10,
+                        fontWeight: "bold"
+                    }}>
+                        AI Assistant
+                    </div>
+
+                    {/* Messages */}
+                    <div style={{ flex: 1, padding: 10, overflowY: "auto" }}>
+                        {messages.map((m, i) => (
+                            <div key={i} style={{ marginBottom: 8 }}>
+                                <b>{m.role === "user" ? "You" : "Bot"}:</b> {m.text}
+                            </div>
+                        ))}
+
+                        {loading && <div> Typing...</div>}
+                    </div>
+
+                    {/* Input */}
+                    <div style={{ display: "flex", borderTop: "1px solid #ddd" }}>
+                        <input
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            style={{ flex: 1, padding: 10, border: "none" }}
+                            placeholder="Type..."
+                        />
+                        <button onClick={sendMessage}>Send</button>
+                    </div>
+                </div>
+            )}
+        </>
+    );
 }
