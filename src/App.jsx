@@ -46,7 +46,7 @@ export default function App() {
                 <Toaster />
             </CartContextprovider>
         </Usercontextprovider>
-
+        <ChatWidget />
     </>
 
 }
