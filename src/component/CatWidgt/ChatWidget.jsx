@@ -36,7 +36,15 @@ export default function ChatWidget() {
                 })
             });
 
-            const data = await res.json();
+            const text = await res.text();
+            console.log(text);
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                throw new Error("Invalid JSON response");
+            }
 
             if (data.error) {
                 setMessages(prev => [
