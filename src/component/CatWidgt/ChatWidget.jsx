@@ -16,7 +16,7 @@ export default function ChatWidget() {
         setLoading(true);
 
         try {
-            const res = await fetch("https://chatbotai-production-83bf.up.railway.app/chat", {
+            const res = await fetch("https://chatbotai-wypy.onrender.com/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
