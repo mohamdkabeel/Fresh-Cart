@@ -5,6 +5,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import '../../index.css'
 import { ClipLoader } from 'react-spinners'
 import { Hearts } from "react-loader-spinner";
+import ChatWidget from '../CatWidgt/ChatWidget'
 
 
 export default function Layout() {
@@ -39,6 +40,8 @@ export default function Layout() {
                 )}
             </div>
             {!loading && <Outlet />}
+            <ChatWidget />
+
 
         </div>
         <Footer />
