@@ -41,7 +41,7 @@ export default function ChatWidget() {
             if (data.error) {
                 setMessages(prev => [
                     ...prev,
-                    { role: "bot", text: data.error || "مفيش رد" }
+                    { role: "bot", text: "" }
                 ]);
             } else {
                 setMessages(prev => [
