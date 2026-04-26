@@ -24,16 +24,15 @@ export default function ChatWidget() {
                     message: userMsg,
                     history: messages
                         .filter(m => m.role === "user" || m.role === "bot")
-                        .map((m, i, arr) => {
-                            if (m.role === "user") {
-                                return {
-                                    user: m.text,
+                        .reduce((acc, curr, i, arr) => {
+                            if (curr.role === "user") {
+                                acc.push({
+                                    user: curr.text,
                                     bot: arr[i + 1]?.text || ""
-                                };
+                                });
                             }
-                            return null;
-                        })
-                        .filter(Boolean)
+                            return acc;
+                        }, [])
                 })
             });
 
