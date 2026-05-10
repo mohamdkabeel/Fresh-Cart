@@ -8,9 +8,17 @@ import toast from 'react-hot-toast';
 
 export default function WishList() {
     const [isLoading, setIsLoading] = useState(false);
-    const [favoriteItems, setFavoriteItems] = useState([]);
 
-    let { getLoggedWishList, removeItemFromWishList, setNumOfFavoriteItems, numOfFavoriteItems, setWishListDetails, wishListDetails, addToCart } = useContext(CartContext);
+    let {
+        getLoggedWishList,
+        removeItemFromWishList,
+        setNumOfFavoriteItems,
+        setWishListDetails,
+        wishListDetails,
+        addToCart,
+        setNumOfCartItems,   // ADDED: needed to sync cart counter after adding from wishlist
+    } = useContext(CartContext);
+
     let navigate = useNavigate();
 
     function getOut() {
@@ -18,6 +26,9 @@ export default function WishList() {
         navigate('/');
     }
 
+    // CHANGED: Now updates numOfCartItems using the count returned by the API,
+    // instead of incorrectly pushing product_Id into the favoriteItems array.
+    // The old code was adding the ID string to a local array which had no effect on the Navbar.
     async function addproducttocartfromwhishlist(product_Id) {
         try {
             const userToken = localStorage.getItem("usertoken");
@@ -25,10 +36,13 @@ export default function WishList() {
                 toast.error("You need to log in first!");
                 return;
             }
+
             let response = await addToCart(product_Id);
-            if (response.data.status === "success") {
+
+            if (response?.data?.status === "success") {
                 toast.success("Product is added to cart!");
-                setFavoriteItems([...favoriteItems, product_Id]);
+                // Sync the global cart counter from the API response
+                setNumOfCartItems(response.data.numOfCartItems);
             } else {
                 toast.error("Error adding product to cart");
             }
@@ -37,26 +51,33 @@ export default function WishList() {
         }
     }
 
+    // Fetches the latest wishlist from the API and updates global context
     async function getWishList() {
         setIsLoading(true);
         let res = await getLoggedWishList();
         if (res?.data?.status === 'success') {
-            setWishListDetails(res?.data?.data);
-            setNumOfFavoriteItems(res?.data?.count);
+            setWishListDetails(res.data.data);
+            setNumOfFavoriteItems(res.data.count);
         } else if (res?.response?.data?.message === 'Expired Token. please login again') {
             getOut();
         }
         setIsLoading(false);
     }
 
+    // CHANGED: After a successful delete, the API returns the updated count directly.
+    // We use that instead of re-fetching the whole list, then re-fetch to refresh the UI.
     async function deleteItem(productId) {
         let res = await removeItemFromWishList(productId);
         if (res?.data?.status === 'success') {
-            setNumOfFavoriteItems(res?.data?.count);
+            // Use the count from the API response to keep Navbar in sync
+            setNumOfFavoriteItems(res.data.count);
             toast.success('Item removed successfully');
+            // Re-fetch wishlist so the removed item disappears from the page instantly
             getWishList();
         } else {
-            res?.response?.data?.message === 'Expired Token. please login again' ? getOut() : toast.error("Failed to remove item");
+            res?.response?.data?.message === 'Expired Token. please login again'
+                ? getOut()
+                : toast.error("Failed to remove item");
         }
     }
 
@@ -94,7 +115,11 @@ export default function WishList() {
                                             <p className="flex items-center">{product.ratingsAverage} <i className="fas fa-star text-yellow-500 ml-1"></i></p>
                                         </div>
                                     </Link>
-                                    <button onClick={() => addproducttocartfromwhishlist(product.id)} className='w-full mt-3 py-2 text-white bg-green-600 rounded-lg'>Add to Cart</button>
+                                    <button
+                                        onClick={() => addproducttocartfromwhishlist(product.id)}
+                                        className='w-full mt-3 py-2 text-white bg-green-600 rounded-lg'>
+                                        Add to Cart
+                                    </button>
                                 </div>
                             ))}
                         </div>
