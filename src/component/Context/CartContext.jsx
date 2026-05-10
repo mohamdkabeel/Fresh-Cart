@@ -5,18 +5,22 @@ export let CartContext = createContext();
 
 export default function CartContextProvider(props) {
 
-    // Returns fresh headers on every call so the token is never stale
     function getHeaders() {
         return { token: localStorage.getItem('usertoken') };
     }
 
-    // ----------->> Cart <<-----------
+    // ----------->> Cart State <<-----------
 
     const [cartId, setCartId] = useState(null);
     const [numOfCartItems, setNumOfCartItems] = useState(0);
 
-    // ----------->> Wish List <<-----------
-    // Declared here (above useEffect) so getLoggedWishList is defined before it's called
+    // ADDED: cartDetails now lives in context (not inside Cart.jsx local state).
+    // This is the fix — when any page calls addToCart, it updates cartDetails here,
+    // and Cart.jsx reads from context so it reflects changes instantly.
+    const [cartDetails, setCartDetails] = useState(null);
+
+    // ----------->> Wishlist State <<-----------
+
     const [numOfFavoriteItems, setNumOfFavoriteItems] = useState(0);
     const [wishListDetails, setWishListDetails] = useState([]);
 
@@ -42,44 +46,33 @@ export default function CartContextProvider(props) {
         ).then((res) => res).catch((error) => error);
     }
 
-    // CHANGED: Now fetches BOTH cart count AND wishlist count on app load.
-    // Previously only cart was fetched, so the heart counter was always 0 after refresh.
-    useEffect(() => {
-        const userToken = localStorage.getItem('usertoken');
-        if (userToken) {
-            // Sync cart counter with real API data
-            getLoggedUserCart().then((res) => {
-                if (res?.data?.status === 'success') {
-                    setNumOfCartItems(res.data.numOfCartItems);
-                    setCartId(res.data.data._id);
-                }
-            });
-
-            // ADDED: Sync wishlist counter and data with real API data on load
-            getLoggedWishList().then((res) => {
-                if (res?.data?.status === 'success') {
-                    setNumOfFavoriteItems(res.data.count);
-                    setWishListDetails(res.data.data);
-                }
-            });
-        }
-    }, []);
-
     // ----------->> Cart Functions <<-----------
-
-    async function addToCart(product_Id) {
-        return axios.post(
-            `https://ecommerce.routemisr.com/api/v1/cart`,
-            { productId: product_Id },
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
-    }
 
     async function getLoggedUserCart() {
         return axios.get(
             `https://ecommerce.routemisr.com/api/v1/cart`,
             { headers: getHeaders() }
         ).then((res) => res).catch((error) => error);
+    }
+
+    // CHANGED: addToCart now also updates cartDetails in context after a successful add.
+    // Before: it only returned the response and left cartDetails untouched.
+    // Now: Cart.jsx reads cartDetails from context, so it updates instantly.
+    async function addToCart(product_Id) {
+        let res = await axios.post(
+            `https://ecommerce.routemisr.com/api/v1/cart`,
+            { productId: product_Id },
+            { headers: getHeaders() }
+        ).then((res) => res).catch((error) => error);
+
+        // If successful, sync cartDetails and counter in context
+        if (res?.data?.status === 'success') {
+            setCartDetails(res.data.data);
+            setNumOfCartItems(res.data.numOfCartItems);
+            setCartId(res.data.data._id);
+        }
+
+        return res; // still return the response so callers can show toast
     }
 
     async function removeItemFromCart(product_Id) {
@@ -127,12 +120,36 @@ export default function CartContextProvider(props) {
         ).then((res) => res).catch((error) => error);
     }
 
+    // Fetch cart + wishlist on app load so counters are correct after refresh
+    useEffect(() => {
+        const userToken = localStorage.getItem('usertoken');
+        if (userToken) {
+            getLoggedUserCart().then((res) => {
+                if (res?.data?.status === 'success') {
+                    setNumOfCartItems(res.data.numOfCartItems);
+                    setCartId(res.data.data._id);
+                    // ADDED: also populate cartDetails on load
+                    setCartDetails(res.data.data);
+                }
+            });
+
+            getLoggedWishList().then((res) => {
+                if (res?.data?.status === 'success') {
+                    setNumOfFavoriteItems(res.data.count);
+                    setWishListDetails(res.data.data);
+                }
+            });
+        }
+    }, []);
+
     return (
         <CartContext.Provider value={{
             cartId,
             setCartId,
             numOfCartItems,
             setNumOfCartItems,
+            cartDetails,        // ADDED to context value
+            setCartDetails,     // ADDED to context value
             addToCart,
             getLoggedUserCart,
             removeItemFromCart,
