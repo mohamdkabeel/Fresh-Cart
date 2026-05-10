@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import logo from "../../assets/Images/";
-import logo from "../../assets/Images/logo.png";
+import logo from "../../assets/Images/product-icon.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { userContetx } from "../Context/Usercontext";
