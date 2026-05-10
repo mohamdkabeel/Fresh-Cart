@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import logo from "../../assets/Images/";
-import logo from "../../assets/Images/logo.png";
+import logo from "../../assets/Images/product-icon.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { userContetx } from "../Context/Usercontext";
@@ -28,7 +28,7 @@ export default function Navbar() {
             <nav className="bg-gray-100 fixed top-0 left-0 right-0 z-10 shadow-md">
                 <div className="container mx-auto flex justify-between items-center p-4">
                     <Link to={"/"}>
-                        <img width={120} src={logo} alt=" Logo" />
+                        <img width={150} src={logo} alt=" Logo" />
                     </Link>
 
                     <button
