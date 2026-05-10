@@ -5,7 +5,7 @@ export default function Footer() {
         <footer className="bg-gray-100 p-8 text-center">
             <div className="max-w-4xl mx-auto">
                 {/* App Download Section */}
-                <h2 className="text-2xl font-semibold">Get the FreshCart app</h2>
+                <h2 className="text-2xl font-semibold">Get the Bazaarna app</h2>
                 <p className="text-gray-600">We will send you a link, open it on your phone to download the app</p>
 
                 <div className="flex justify-between items-center mt-4">
