@@ -3,10 +3,19 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import { CartContext } from '../Context/CartContext';
-
+import toast from 'react-hot-toast';
 
 export default function Productdetails() {
-    let { setNumOfFavoriteItems, addToWishList, removeItemFromWishList } = useContext(CartContext)
+    // CHANGED: Pull all needed functions from context.
+    // Previously only addToWishList was used but not wired to a product ID.
+    let {
+        addToCart,
+        setNumOfCartItems,
+        addToWishList,
+        setNumOfFavoriteItems,
+        numOfFavoriteItems,
+    } = useContext(CartContext);
+
     const [productdetails, setProductDetails] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     let { id, category } = useParams();
@@ -14,8 +23,7 @@ export default function Productdetails() {
     function getRelatedProducts(category) {
         axios.get('https://ecommerce.routemisr.com/api/v1/products')
             .then(({ data }) => {
-                let allProducts = data.data;
-                let related = allProducts.filter((product) => product.category.name === category);
+                let related = data.data.filter((product) => product.category.name === category);
                 setRelatedProducts(related);
             })
             .catch((error) => {
@@ -37,6 +45,54 @@ export default function Productdetails() {
         getProductDetails(id);
         getRelatedProducts(category);
     }, [id, category]);
+
+    // ADDED: Proper Add to Cart handler for the main product.
+    // The button existed in the UI but had no onClick at all.
+    async function addproducttocart(product_Id) {
+        try {
+            const userToken = localStorage.getItem("usertoken");
+            if (!userToken) {
+                toast.error("You need to log in first!");
+                return;
+            }
+
+            let response = await addToCart(product_Id);
+
+            if (response?.data?.status === "success") {
+                toast.success("Product is added to cart!");
+                // Sync Navbar counter using the real count from the API
+                setNumOfCartItems(response.data.numOfCartItems);
+            } else {
+                toast.error("Error adding product to cart");
+            }
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    }
+
+    // ADDED: Proper Add to Wishlist handler for the main product.
+    // The old code called addToWishList with no arguments — no product ID was passed.
+    async function addproducttowishlist(product_Id) {
+        try {
+            const userToken = localStorage.getItem("usertoken");
+            if (!userToken) {
+                toast.error("You need to log in first!");
+                return;
+            }
+
+            let response = await addToWishList(product_Id);
+
+            if (response?.data?.status === "success") {
+                toast.success("Product is added to wishlist!");
+                // Sync Navbar heart counter using the real count from the API
+                setNumOfFavoriteItems(response.data.count);
+            } else {
+                toast.error("Error adding product to wishlist");
+            }
+        } catch (error) {
+            console.error("Error adding to wishlist:", error);
+        }
+    }
 
     const settings = {
         dots: true,
@@ -60,7 +116,11 @@ export default function Productdetails() {
                     <h2 className="text-2xl mt-2">{productdetails?.title}</h2>
                     <div className="flex justify-between items-center">
                         <p className="text-gray-500 mt-2">{productdetails?.description}</p>
-                        <Link onClick={addToWishList}><i className="fa-solid fa-heart text-gray-400 text-3xl hover:text-[#dc3545] focus:text-[#dc3545]"></i></Link>
+                        {/* CHANGED: Now passes productdetails?._id to the wishlist handler.
+                            Old code called addToWishList with no argument (no product ID). */}
+                        <Link onClick={() => addproducttowishlist(productdetails?._id)}>
+                            <i className="fa-solid fa-heart text-gray-400 text-3xl hover:text-[#dc3545] focus:text-[#dc3545]"></i>
+                        </Link>
                     </div>
                     <div className="flex justify-between items-center mt-2">
                         <p className="text-xl font-normal">{productdetails?.price} EGP</p>
@@ -70,7 +130,11 @@ export default function Productdetails() {
                         </p>
                     </div>
                     <div className="flex justify-between items-center mt-2">
-                        <button className="bg-green-500 w-full p-2 text-white rounded-lg flex justify-center items-center">
+                        {/* CHANGED: Button now calls addproducttocart with the product ID.
+                            Old button had no onClick at all. */}
+                        <button
+                            onClick={() => addproducttocart(productdetails?._id)}
+                            className="bg-green-500 w-full p-2 text-white rounded-lg flex justify-center items-center">
                             <i className="fa-solid fa-cart-shopping text-white mr-2"></i> Add to Cart
                         </button>
                     </div>
@@ -88,10 +152,22 @@ export default function Productdetails() {
                                 <p className="text-xl font-normal text-gray-800 mb-4">{product.title.split(' ').splice(0, 2).join(' ')}</p>
                                 <div className="flex justify-between items-center">
                                     <p>{product.price} EGP</p>
-                                    <p className='flex justify-between items-center'>{product.ratingsAverage} <i className="fas fa-star text-yellow-500 p-2"></i></p>
-
+                                    <p className='flex justify-between items-center'>
+                                        {product.ratingsAverage}
+                                        <i className="fas fa-star text-yellow-500 p-2"></i>
+                                    </p>
                                 </div>
-                                <button className="w-full bg-green-600 text-white px-4 py-2 mt-2 rounded-lg">Add to Cart</button>
+                                {/* CHANGED: Button now calls addproducttocart with the related product's ID.
+                                    The button was inside the Link, so clicks were navigating instead of adding to cart.
+                                    Moved onClick here and used e.preventDefault() to stop navigation. */}
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault(); // stop the Link from navigating on button click
+                                        addproducttocart(product.id);
+                                    }}
+                                    className="w-full bg-green-600 text-white px-4 py-2 mt-2 rounded-lg">
+                                    Add to Cart
+                                </button>
                             </div>
                         </Link>
                     </div>

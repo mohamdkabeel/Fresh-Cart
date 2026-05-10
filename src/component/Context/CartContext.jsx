@@ -5,7 +5,7 @@ export let CartContext = createContext();
 
 export default function CartContextProvider(props) {
 
-    // Headers read fresh on every request so token is always up to date
+    // Returns fresh headers on every call so the token is never stale
     function getHeaders() {
         return { token: localStorage.getItem('usertoken') };
     }
@@ -13,23 +13,59 @@ export default function CartContextProvider(props) {
     // ----------->> Cart <<-----------
 
     const [cartId, setCartId] = useState(null);
-    // CHANGED: numOfCartItems now starts as 0 but is fetched from API on mount
     const [numOfCartItems, setNumOfCartItems] = useState(0);
 
-    // ADDED: Fetch the real cart count from the API when the app loads.
-    // This fixes the bug where the counter always showed 0 after a refresh.
+    // ----------->> Wish List <<-----------
+    // Declared here (above useEffect) so getLoggedWishList is defined before it's called
+    const [numOfFavoriteItems, setNumOfFavoriteItems] = useState(0);
+    const [wishListDetails, setWishListDetails] = useState([]);
+
+    async function getLoggedWishList() {
+        return axios.get(
+            `https://ecommerce.routemisr.com/api/v1/wishlist`,
+            { headers: getHeaders() }
+        ).then((res) => res).catch((error) => error);
+    }
+
+    async function addToWishList(product_Id) {
+        return axios.post(
+            `https://ecommerce.routemisr.com/api/v1/wishlist`,
+            { productId: product_Id },
+            { headers: getHeaders() }
+        ).then((res) => res).catch((error) => error);
+    }
+
+    async function removeItemFromWishList(product_Id) {
+        return axios.delete(
+            `https://ecommerce.routemisr.com/api/v1/wishlist/${product_Id}`,
+            { headers: getHeaders() }
+        ).then((res) => res).catch((error) => error);
+    }
+
+    // CHANGED: Now fetches BOTH cart count AND wishlist count on app load.
+    // Previously only cart was fetched, so the heart counter was always 0 after refresh.
     useEffect(() => {
         const userToken = localStorage.getItem('usertoken');
         if (userToken) {
+            // Sync cart counter with real API data
             getLoggedUserCart().then((res) => {
                 if (res?.data?.status === 'success') {
-                    // Sync counter with the actual number of items in the cart
                     setNumOfCartItems(res.data.numOfCartItems);
                     setCartId(res.data.data._id);
                 }
             });
+
+            // ADDED: Sync wishlist counter and data with real API data on load
+            getLoggedWishList().then((res) => {
+                if (res?.data?.status === 'success') {
+                    setNumOfFavoriteItems(res.data.count);
+                    setWishListDetails(res.data.data);
+                }
+            });
         }
     }, []);
+
+    // ----------->> Cart Functions <<-----------
 
     async function addToCart(product_Id) {
         return axios.post(
@@ -88,33 +124,6 @@ export default function CartContextProvider(props) {
     async function getLoggedUserOrders(userId) {
         return axios.get(
             `https://ecommerce.routemisr.com/api/v1/orders/user/${userId}`
-        ).then((res) => res).catch((error) => error);
-    }
-
-    // ----------->> Wish List <<-----------
-
-    const [numOfFavoriteItems, setNumOfFavoriteItems] = useState(0);
-    const [wishListDetails, setWishListDetails] = useState([]);
-
-    async function getLoggedWishList() {
-        return axios.get(
-            `https://ecommerce.routemisr.com/api/v1/wishlist`,
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
-    }
-
-    async function addToWishList(product_Id) {
-        return axios.post(
-            `https://ecommerce.routemisr.com/api/v1/wishlist`,
-            { productId: product_Id },
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
-    }
-
-    async function removeItemFromWishList(product_Id) {
-        return axios.delete(
-            `https://ecommerce.routemisr.com/api/v1/wishlist/${product_Id}`,
-            { headers: getHeaders() }
         ).then((res) => res).catch((error) => error);
     }
 
