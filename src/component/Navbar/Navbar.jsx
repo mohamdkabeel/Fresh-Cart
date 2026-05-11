@@ -25,21 +25,21 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="bg-gray-100 fixed top-0 left-0 right-0 z-10 shadow-md">
-                <div className="container mx-auto flex justify-between items-center px-4 py-2">
+            <nav className="bg-gray-100 fixed top-0 left-0 right-0 z-10 shadow-sm">
+                <div className="container mx-auto flex justify-between items-center px-4 py-1.5">
 
                     {/* Logo */}
                     <Link to={"/"}>
                         <img
                             src={logo}
                             alt="Logo"
-                            className="w-20 h-auto object-contain"
+                            className="w-16 h-auto object-contain"
                         />
                     </Link>
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="md:hidden text-xl"
+                        className="md:hidden text-lg"
                         onClick={() => setMenuOpen(!menuOpen)}
                     >
                         {menuOpen ? "✖" : "☰"}
@@ -49,31 +49,31 @@ export default function Navbar() {
                     {userToken && (
                         <ul
                             className={`${menuOpen ? "block" : "hidden"
-                                } md:flex flex-col md:flex-row absolute md:static top-14 left-0 w-full md:w-auto bg-gray-100 md:bg-transparent text-center md:text-left transition-all duration-300`}
+                                } md:flex flex-col md:flex-row absolute md:static top-12 left-0 w-full md:w-auto bg-gray-100 md:bg-transparent text-center md:text-left transition-all duration-300`}
                         >
-                            <li className="py-2 md:py-0 md:px-3">
+                            <li className="py-1 md:py-0 md:px-2 text-sm">
                                 <Link to={""}>Home</Link>
                             </li>
 
-                            <li className="py-2 md:py-0 md:px-3">
+                            <li className="py-1 md:py-0 md:px-2 text-sm">
                                 <Link to={"Cart"}>Cart</Link>
                             </li>
 
-                            <li className="py-2 md:py-0 md:px-3">
+                            <li className="py-1 md:py-0 md:px-2 text-sm">
                                 <Link to={"Products"}>Products</Link>
                             </li>
 
-                            <li className="py-2 md:py-0 md:px-3">
+                            <li className="py-1 md:py-0 md:px-2 text-sm">
                                 <Link to={"Brands"}>Brands</Link>
                             </li>
                         </ul>
                     )}
 
                     {/* Right Side */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
 
                         {userToken && (
-                            <ul className="hidden md:flex items-center gap-3">
+                            <ul className="hidden md:flex items-center gap-2 text-sm">
 
                                 <li>
                                     <i className="fa-brands fa-facebook cursor-pointer"></i>
@@ -94,22 +94,22 @@ export default function Navbar() {
                                 {/* Wishlist */}
                                 <li>
                                     <Link to={"/Wishlist"} className="relative">
-                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full px-1">
+                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] rounded-full px-1">
                                             {numOfFavoriteItems}
                                         </span>
 
-                                        <i className="fa-solid fa-heart text-lg text-red-500"></i>
+                                        <i className="fa-solid fa-heart text-base text-red-500"></i>
                                     </Link>
                                 </li>
 
                                 {/* Cart */}
                                 <li>
                                     <Link to={"/Cart"} className="relative">
-                                        <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] rounded-full px-1">
+                                        <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[9px] rounded-full px-1">
                                             {numOfCartItems}
                                         </span>
 
-                                        <i className="fa-solid fa-cart-shopping text-lg text-green-500"></i>
+                                        <i className="fa-solid fa-cart-shopping text-base text-green-500"></i>
                                     </Link>
                                 </li>
                             </ul>
@@ -119,11 +119,11 @@ export default function Navbar() {
                         <div className="text-sm">
                             {!userToken ? (
                                 <>
-                                    <Link to={"Login"} className="px-2">
+                                    <Link to={"Login"} className="px-1">
                                         Login
                                     </Link>
 
-                                    <Link to={"register"} className="px-2">
+                                    <Link to={"register"} className="px-1">
                                         Register
                                     </Link>
                                 </>
