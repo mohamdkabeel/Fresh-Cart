@@ -28,13 +28,17 @@ export default function Navbar() {
             <nav className="bg-gray-100 fixed top-0 left-0 right-0 z-10 shadow-sm">
                 <div className="container mx-auto flex justify-between items-center px-4 py-1.5">
 
-                    {/* Logo */}
-                    <Link to={"/"}>
+                    {/* Logo + Brand */}
+                    <Link to={"/"} className="flex items-center gap-2">
                         <img
                             src={logo}
                             alt="Logo"
                             className="w-16 h-auto object-contain"
                         />
+
+                        <h1 className="text-xl font-extrabold tracking-wide bg-gradient-to-r from-green-500 to-emerald-700 bg-clip-text text-transparent">
+                            Baazarna
+                        </h1>
                     </Link>
 
                     {/* Mobile Menu Button */}
@@ -51,19 +55,19 @@ export default function Navbar() {
                             className={`${menuOpen ? "block" : "hidden"
                                 } md:flex flex-col md:flex-row absolute md:static top-12 left-0 w-full md:w-auto bg-gray-100 md:bg-transparent text-center md:text-left transition-all duration-300`}
                         >
-                            <li className="py-1 md:py-0 md:px-2 text-sm">
+                            <li className="py-1 md:py-0 md:px-2 text-sm hover:text-green-600 transition">
                                 <Link to={""}>Home</Link>
                             </li>
 
-                            <li className="py-1 md:py-0 md:px-2 text-sm">
+                            <li className="py-1 md:py-0 md:px-2 text-sm hover:text-green-600 transition">
                                 <Link to={"Cart"}>Cart</Link>
                             </li>
 
-                            <li className="py-1 md:py-0 md:px-2 text-sm">
+                            <li className="py-1 md:py-0 md:px-2 text-sm hover:text-green-600 transition">
                                 <Link to={"Products"}>Products</Link>
                             </li>
 
-                            <li className="py-1 md:py-0 md:px-2 text-sm">
+                            <li className="py-1 md:py-0 md:px-2 text-sm hover:text-green-600 transition">
                                 <Link to={"Brands"}>Brands</Link>
                             </li>
                         </ul>
@@ -76,19 +80,19 @@ export default function Navbar() {
                             <ul className="hidden md:flex items-center gap-2 text-sm">
 
                                 <li>
-                                    <i className="fa-brands fa-facebook cursor-pointer"></i>
+                                    <i className="fa-brands fa-facebook cursor-pointer hover:text-blue-600 transition"></i>
                                 </li>
 
                                 <li>
-                                    <i className="fa-brands fa-instagram cursor-pointer"></i>
+                                    <i className="fa-brands fa-instagram cursor-pointer hover:text-pink-500 transition"></i>
                                 </li>
 
                                 <li>
-                                    <i className="fa-brands fa-twitter cursor-pointer"></i>
+                                    <i className="fa-brands fa-twitter cursor-pointer hover:text-sky-500 transition"></i>
                                 </li>
 
                                 <li>
-                                    <i className="fa-brands fa-tiktok cursor-pointer"></i>
+                                    <i className="fa-brands fa-tiktok cursor-pointer hover:text-black transition"></i>
                                 </li>
 
                                 {/* Wishlist */}
@@ -119,16 +123,19 @@ export default function Navbar() {
                         <div className="text-sm">
                             {!userToken ? (
                                 <>
-                                    <Link to={"Login"} className="px-1">
+                                    <Link to={"Login"} className="px-1 hover:text-green-600 transition">
                                         Login
                                     </Link>
 
-                                    <Link to={"register"} className="px-1">
+                                    <Link to={"register"} className="px-1 hover:text-green-600 transition">
                                         Register
                                     </Link>
                                 </>
                             ) : (
-                                <span className="cursor-pointer" onClick={logOut}>
+                                <span
+                                    className="cursor-pointer hover:text-red-500 transition"
+                                    onClick={logOut}
+                                >
                                     Logout
                                 </span>
                             )}
