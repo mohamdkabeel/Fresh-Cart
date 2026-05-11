@@ -28,7 +28,6 @@ export default function Navbar() {
             <nav className="bg-gray-100 fixed top-0 left-0 right-0 z-10 shadow-sm">
                 <div className="container mx-auto flex justify-between items-center px-4 py-1.5">
 
-                    {/* Logo + Brand */}
                     <Link to={"/"} className="flex items-center gap-2">
                         <img
                             src={logo}
@@ -36,7 +35,7 @@ export default function Navbar() {
                             className="w-16 h-auto object-contain"
                         />
 
-                        <h1 className="text-xl font-extrabold tracking-wide bg-gradient-to-r from-green-500 to-emerald-700 bg-clip-text text-transparent">
+                        <h1 className="text-xl font-extrabold tracking-wide text-black hover:text-green-600 transition duration-300">
                             Baazarna
                         </h1>
                     </Link>
