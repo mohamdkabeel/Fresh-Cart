@@ -14,8 +14,8 @@
 
 import { useContext } from 'react';
 import toast from 'react-hot-toast';
-import { CartContext } from '../Context/CartContext';
-import CartEventManager from './cartEventManager';
+import { CartContext } from '../component/Context/CartContext';
+import CartEventManager from '../Observer/cartEventManager';
 
 /**
  * @returns {{ addProductToCart: (productId: string) => Promise<void> }}
