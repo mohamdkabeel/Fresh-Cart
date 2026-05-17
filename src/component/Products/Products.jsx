@@ -5,9 +5,10 @@ import empty from '../../assets/Images/NoProducts.svg';
 import Spinner from '../Spinner/Spinner';
 
 // ── Design Patterns ──────────────────────────────────────────
-import SortStrategy from './sortingStrategies';          // STRATEGY
-import CartEventManager from './cartEventManager';       // OBSERVER (event bus)
-import { useAddToCart } from './useAddToCart';           // OBSERVER (hook)
+// import SortStrategy from './sortingStrategies';          // STRATEGY
+import SortStrategy from '../../Strategies/sortingStrategies';          // STRATEGY
+import CartEventManager from '../../Observer/cartEventManager';       // OBSERVER (event bus)
+import { useAddToCart } from '../../Hooks/useAddToCart';           // OBSERVER (hook)
 
 export default function Products() {
     const [products, setProducts] = useState([]);
