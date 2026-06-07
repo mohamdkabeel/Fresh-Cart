@@ -4,10 +4,13 @@ import { Link } from 'react-router-dom'
 import { CartContext } from '../Context/CartContext'
 import toast from 'react-hot-toast'
 import { userContetx } from '../Context/Usercontext'
+import Spinner from '../Spinner/Spinner'
 
 export default function ShowComponent() {
     const [isFavorite, setIsFavorite] = useState(false);
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const {
         numOfCartItems,
@@ -55,17 +58,18 @@ export default function ShowComponent() {
                 return;
             }
 
-            let { data } = await addToWishList(product_Id);
+            let response = await addToWishList(product_Id);
 
-            if (data.status === 'success') {
+            if (response?.data?.status === 'success') {
                 toast.success("Product is added to wishlist!");
                 getWishListInfo();
-                setNumOfFavoriteItems(numOfFavoriteItems + 1);
+                setNumOfFavoriteItems(response.data.count || numOfFavoriteItems + 1);
             } else {
-                toast.error("Error adding product to wishlist");
+                toast.error(response?.response?.data?.message || "Error adding product to wishlist");
             }
         } catch (error) {
-            console.error("Error adding item to wishlist:", error);
+            toast.error("Error adding product to wishlist");
+            console.error("[ShowComponent] addwishlist failed:", error);
         }
     }
 
@@ -76,17 +80,24 @@ export default function ShowComponent() {
             toast.success('Item removed Successfully');
             getWishListInfo();
         } else {
-            console.log('error');
+            toast.error('Failed to remove item from wishlist');
+            console.error('[ShowComponent] deleteProductFromWishList failed:', res?.response?.data?.message || 'Unknown error');
         }
     }
 
     function getProducts() {
+        setLoading(true);
         axios.get(`https://ecommerce.routemisr.com/api/v1/products`)
             .then(({ data }) => {
                 setProducts(data.data);
+                setError(null);
             })
-            .catch((error) => {
-                console.error('error fetching products', error);
+            .catch((err) => {
+                console.error('[ShowComponent] Failed to fetch products:', err.response?.data?.message || err.message);
+                setError('Failed to load products.');
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }
 
@@ -103,6 +114,19 @@ export default function ShowComponent() {
     useEffect(() => {
         getProducts();
     }, []);
+
+    if (loading) return <Spinner />;
+
+    if (error) {
+        return (
+            <div className="container px-10 text-center py-8">
+                <p className="text-red-600 text-lg">{error}</p>
+                <button onClick={getProducts} className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg">
+                    Retry
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="container px-10">

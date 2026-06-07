@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import { CartContext } from '../Context/CartContext';
 import toast from 'react-hot-toast';
+import Spinner from '../Spinner/Spinner';
 
 export default function Productdetails() {
     let {
@@ -15,6 +16,8 @@ export default function Productdetails() {
 
     const [productdetails, setProductDetails] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     let { id, category } = useParams();
 
     function getRelatedProducts(category) {
@@ -23,20 +26,24 @@ export default function Productdetails() {
                 let related = data.data.filter((product) => product.category.name === category);
                 setRelatedProducts(related);
             })
-            .catch((error) => {
-                console.error('Error fetching related products', error);
+            .catch((err) => {
+                console.error('[Productdetails] Failed to fetch related products:', err.response?.data?.message || err.message);
             });
     }
 
     function getProductDetails(id) {
+        setLoading(true);
+        setError(null);
         axios.get(`https://ecommerce.routemisr.com/api/v1/products/${id}`)
             .then(({ data }) => {
                 setProductDetails(data.data);
-                // FIX: Log the product object so you can see id vs _id in console
-                console.log('Product details loaded:', data.data);
             })
-            .catch((error) => {
-                console.error('Error fetching product details', error);
+            .catch((err) => {
+                console.error('[Productdetails] Failed to fetch product details:', err.response?.data?.message || err.message);
+                setError('Failed to load product details. Please try again.');
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }
 
@@ -119,6 +126,19 @@ export default function Productdetails() {
         slidesToShow: 1,
         slidesToScroll: 1,
     };
+
+    if (loading) return <Spinner />;
+
+    if (error) {
+        return (
+            <div className="container mt-[5%] text-center">
+                <p className="text-red-600 text-lg">{error}</p>
+                <button onClick={() => getProductDetails(id)} className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg">
+                    Retry
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="container mt-[1%] p-[5%]">

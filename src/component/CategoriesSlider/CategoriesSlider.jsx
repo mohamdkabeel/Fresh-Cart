@@ -6,14 +6,17 @@ import "slick-carousel/slick/slick-theme.css";
 
 export default function CategoriesSlider(props) {
     const [categories, setCategories] = useState([]);
+    const [error, setError] = useState(null);
 
     function getCategories() {
         axios.get(`https://ecommerce.routemisr.com/api/v1/categories`)
             .then(({ data }) => {
                 setCategories(data.data);
+                setError(null);
             })
             .catch((error) => {
-                console.error('Error fetching categories:', error);
+                console.error('[CategoriesSlider] Failed to fetch categories:', error.response?.data?.message || error.message);
+                setError('Failed to load categories.');
             });
     }
 
@@ -61,6 +64,14 @@ export default function CategoriesSlider(props) {
             }
         ]
     };
+
+    if (error) {
+        return (
+            <div className="px-10 text-center py-4">
+                <p className="text-red-500 text-sm">{error}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="px-10">
