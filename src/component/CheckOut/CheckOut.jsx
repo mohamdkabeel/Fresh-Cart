@@ -1,16 +1,13 @@
-import React from 'react'
 import { useState } from "react";
-import { useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { usePageTitle } from '../../Hooks/usePageTitle';
 
 export default function CheckOut() {
     const [cardNumber, setCardNumber] = useState("");
     const [expiry, setExpiry] = useState("");
     const [cvv, setCvv] = useState("");
 
-    useEffect(() => {
-        document.title = 'CheckOut'
-    }, [])
+    usePageTitle('CheckOut');
     const handlePayment = () => {
         if (!cardNumber || !expiry || !cvv) {
             toast.error("Please fill in all fields");

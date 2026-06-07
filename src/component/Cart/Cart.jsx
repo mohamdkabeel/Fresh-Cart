@@ -1,48 +1,34 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../Context/CartContext.jsx'
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner.jsx';
-import empty from '../../assets/Images/Empty-cart.svg';
+import { usePageTitle } from '../../Hooks/usePageTitle';
+import { useAuthGuard } from '../../Hooks/useAuthGuard';
 
 export default function Cart() {
-    // CHANGED: Now reads cartDetails FROM CONTEXT instead of keeping it in local state.
-    // This is the core fix — when Products.jsx or any page calls addToCart,
-    // it updates cartDetails in context, and this component re-renders automatically.
     let {
         getLoggedUserCart,
         removeItemFromCart,
         updateProductCount,
         setNumOfCartItems,
         removeCart,
-        cartDetails,       // ADDED: from context now
-        setCartDetails,    // ADDED: from context now
+        cartDetails,
+        setCartDetails,
     } = useContext(CartContext);
 
-    // REMOVED: const [cartDetails, setCartDetails] = useState(null);
-    // cartDetails is no longer local — it lives in CartContext
-
     const [isLoading, setIsLoading] = useState(false);
-    let navigate = useNavigate();
+    const { handleExpiredToken } = useAuthGuard();
+    usePageTitle('Cart');
 
-    function getOut() {
-        localStorage.removeItem('userToken');
-        navigate('/');
-    }
-
-    // getCart still runs on mount to make sure data is fresh when user opens Cart page
     async function getCart() {
         setIsLoading(true);
         let res = await getLoggedUserCart();
         if (res?.data?.status === 'success') {
-            // Updates context so everything stays in sync
             setCartDetails(res.data.data);
             setNumOfCartItems(res.data.numOfCartItems);
         } else {
-            if (res?.response?.data?.message === 'Expired Token. please login again') {
-                getOut();
-            }
+            handleExpiredToken(res);
         }
         setIsLoading(false);
     }
@@ -50,48 +36,38 @@ export default function Cart() {
     async function removeitem(product_Id) {
         let res = await removeItemFromCart(product_Id);
         if (res?.data?.status === 'success') {
-            // Update context so Navbar counter and Cart page both reflect the change
             setCartDetails(res.data.data);
             setNumOfCartItems(res?.data?.numOfCartItems);
             toast.success('Item removed Successfully');
-        } else {
-            res?.response?.data?.message === 'Expired Token. please login again'
-                ? getOut()
-                : toast.error("Failed to remove item");
+        } else if (!handleExpiredToken(res)) {
+            toast.error("Failed to remove item");
         }
     }
 
     async function updateitems(product_Id, count) {
         let res = await updateProductCount(product_Id, count);
         if (res?.data?.status === 'success') {
-            // Update context so Navbar and Cart stay in sync
             setCartDetails(res.data.data);
             setNumOfCartItems(res?.data?.numOfCartItems);
             toast.success('Quantity updated Successfully');
-        } else {
-            res?.response?.data?.message === 'Expired Token. please login again'
-                ? getOut()
-                : toast.error("Failed to update quantity");
+        } else if (!handleExpiredToken(res)) {
+            toast.error("Failed to update quantity");
         }
     }
 
     async function clearCart() {
         let res = await removeCart();
         if (res?.data?.message === 'success') {
-            // Clear context so Navbar shows 0 and Cart page shows empty
             setCartDetails(null);
             setNumOfCartItems(0);
             toast.success('Cleared Cart Successfully');
-        } else {
-            res?.response?.data?.message === 'Expired Token. please login again'
-                ? getOut()
-                : toast.error("Failed Operation");
+        } else if (!handleExpiredToken(res)) {
+            toast.error("Failed Operation");
         }
     }
 
     useEffect(() => {
         getCart();
-        document.title = 'Cart';
     }, []);
 
     if (isLoading) {

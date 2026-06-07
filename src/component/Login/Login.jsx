@@ -1,18 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik';
 import axios from 'axios'
 import * as yup from 'yup';
-import { userContetx } from '../Context/Usercontext';
 import { CartContext } from '../Context/CartContext';
+import FormField from '../FormField/FormField';
+import { usePageTitle } from '../../Hooks/usePageTitle';
 
 export default function Login() {
-    let { setuserlogin, userlogin } = useContext(CartContext)
+    let { setuserlogin } = useContext(CartContext)
     const Navigate = useNavigate();
+    usePageTitle('LOGIN');
+
     let validationSchema = yup.object({
         email: yup.string().email('email is invalid').required('email is required'),
         password: yup.string().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'Password must be strong').required('password is required'),
     })
+
     function HandleLogin(formikvalue) {
         setisloading(true)
         axios.post(
@@ -42,8 +46,6 @@ export default function Login() {
 
     const [apierror, setapierror] = useState('');
     const [isloading, setisloading] = useState(false);
-    useEffect(() => { document.title = "LOGIN" }, [])
-
 
     return (
         <div className="container mt-20 flex justify-center items-center px-4">
@@ -53,31 +55,15 @@ export default function Login() {
                         Login Now :
                     </h1>
                 </div>
-                <div className="z-0 w-full mb-5 mt-5">
-                    <label className='text-gray-700' htmlFor='email'>Email</label>
-                    <input type="email" id='email' onChange={formik.handleChange} onBlur={formik.handleBlur} className='form-control mt-1 px-4 mb-2 block py-2.5 w-full text-sm text-dark bg-white rounded border border-gray-200 focus:outline-none focus:shadow-lg' name='email' required />
-                </div>
-                {formik.errors.email && formik.touched.email ? (
-                    <div className="p-4 mb-4 text-sm text-red-900 rounded-lg bg-red-50">
-                        {formik.errors.email}
-                    </div>
-                ) : null}
 
-                <div className="z-0 w-full mb-5 mt-5">
-                    <label className="text-gray-700" htmlFor="password">Password</label>
-                    <input type="password" id="password" onChange={formik.handleChange} onBlur={formik.handleBlur} className="form-control mt-1 px-4 mb-2 block py-2.5 w-full text-sm text-dark bg-white rounded border border-gray-200 focus:outline-none focus:shadow-lg" name="password" required />
-                </div>
-                {formik.errors.password && formik.touched.password ? (
-                    <div className="p-4 mb-4 text-sm text-red-900 rounded-lg bg-red-50">
-                        {formik.errors.password}
-                    </div>
-                ) : null}
+                <FormField id="email" label="Email" type="email" formik={formik} />
+                <FormField id="password" label="Password" type="password" formik={formik} />
 
                 <button type="submit" className="mb-5 w-full text-white bg-green-300 hover:bg-green-500 focus:ring-4 focus:ring-green-500 font-medium rounded-lg text-sm px-5 py-2.5">
                     {isloading ? <i className="fa fa-spinner fa-spin"></i> : 'Login'}
                 </button>
 
-                <p className="text-center"> Don't have an account? <Link to="/register" className='text-blue-500 font-bold'>Register</Link> </p>
+                <p className="text-center"> Don&apos;t have an account? <Link to="/register" className='text-blue-500 font-bold'>Register</Link> </p>
 
                 {apierror ? <div className="mt-2 p-4 mb-4 text-sm text-red-900 rounded-lg bg-red-50">
                     {apierror}
