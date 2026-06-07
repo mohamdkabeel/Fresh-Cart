@@ -28,9 +28,9 @@ export default function Login() {
                     setuserlogin(response.data.token)
                 }
             })
-            .catch(() => {
+            .catch((error) => {
                 setisloading(false)
-                setapierror('Email or password is incorrect please try again or contact us')
+                setapierror(error?.response?.data?.message || 'Email or password is incorrect. Please try again.')
             })
     }
 

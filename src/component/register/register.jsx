@@ -18,14 +18,13 @@ export default function Register() {
             'https://ecommerce.routemisr.com/api/v1/auth/signup',
             formikvalue
         )
-            .then((apirespone) => {
+            .then((response) => {
+                setisloading(false)
                 Navigate('/Login')
-                setisloading(false)
-                console.log(x.data)
             })
-            .catch((apirespone) => {
+            .catch((error) => {
                 setisloading(false)
-                setapierror(apirespone?.response?.data?.message)
+                setapierror(error?.response?.data?.message || 'Registration failed. Please try again.')
             })
     }
 

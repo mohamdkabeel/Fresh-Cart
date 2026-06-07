@@ -1,17 +1,40 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import Spinner from '../Spinner/Spinner';
 
 export default function Brands() {
     const [brands, setBrands] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     async function displayBrand() {
-        let { data } = await axios.get('https://ecommerce.routemisr.com/api/v1/brands');
-        setBrands(data.data);
+        try {
+            let { data } = await axios.get('https://ecommerce.routemisr.com/api/v1/brands');
+            setBrands(data.data);
+        } catch (err) {
+            console.error('[Brands] Failed to fetch brands:', err.response?.data?.message || err.message);
+            setError('Failed to load brands. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
         displayBrand();
     }, []);
+
+    if (loading) return <Spinner />;
+
+    if (error) {
+        return (
+            <div className="container mt-20 md:mt-[5%] text-center">
+                <p className="text-red-600 text-lg">{error}</p>
+                <button onClick={() => { setError(null); setLoading(true); displayBrand(); }} className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg">
+                    Retry
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="container mt-20 md:mt-[5%]">

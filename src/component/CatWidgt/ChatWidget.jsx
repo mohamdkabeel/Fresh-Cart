@@ -49,7 +49,7 @@ export default function ChatWidget() {
             if (data.error) {
                 setMessages(prev => [
                     ...prev,
-                    { role: "bot", text: "" }
+                    { role: "bot", text: data.error || "Something went wrong. Please try again." }
                 ]);
             } else {
                 setMessages(prev => [

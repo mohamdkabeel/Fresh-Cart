@@ -25,45 +25,71 @@ export default function CartContextProvider(props) {
     const [wishListDetails, setWishListDetails] = useState([]);
 
     async function getLoggedWishList() {
-        return axios.get(
-            `https://ecommerce.routemisr.com/api/v1/wishlist`,
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.get(
+                `https://ecommerce.routemisr.com/api/v1/wishlist`,
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] getLoggedWishList failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     async function addToWishList(product_Id) {
-        return axios.post(
-            `https://ecommerce.routemisr.com/api/v1/wishlist`,
-            { productId: product_Id },
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.post(
+                `https://ecommerce.routemisr.com/api/v1/wishlist`,
+                { productId: product_Id },
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] addToWishList failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     async function removeItemFromWishList(product_Id) {
-        return axios.delete(
-            `https://ecommerce.routemisr.com/api/v1/wishlist/${product_Id}`,
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.delete(
+                `https://ecommerce.routemisr.com/api/v1/wishlist/${product_Id}`,
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] removeItemFromWishList failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     // ----------->> Cart Functions <<-----------
 
     async function getLoggedUserCart() {
-        return axios.get(
-            `https://ecommerce.routemisr.com/api/v1/cart`,
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.get(
+                `https://ecommerce.routemisr.com/api/v1/cart`,
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] getLoggedUserCart failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     // CHANGED: addToCart now also updates cartDetails in context after a successful add.
     // Before: it only returned the response and left cartDetails untouched.
     // Now: Cart.jsx reads cartDetails from context, so it updates instantly.
     async function addToCart(product_Id) {
-        let res = await axios.post(
-            `https://ecommerce.routemisr.com/api/v1/cart`,
-            { productId: product_Id },
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        let res;
+        try {
+            res = await axios.post(
+                `https://ecommerce.routemisr.com/api/v1/cart`,
+                { productId: product_Id },
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] addToCart failed:', error.response?.data?.message || error.message);
+            return error;
+        }
 
         // If successful, sync cartDetails and counter in context
         if (res?.data?.status === 'success') {
@@ -72,52 +98,82 @@ export default function CartContextProvider(props) {
             setCartId(res.data.data._id);
         }
 
-        return res; // still return the response so callers can show toast
+        return res;
     }
 
     async function removeItemFromCart(product_Id) {
-        return axios.delete(
-            `https://ecommerce.routemisr.com/api/v1/cart/${product_Id}`,
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.delete(
+                `https://ecommerce.routemisr.com/api/v1/cart/${product_Id}`,
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] removeItemFromCart failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     async function updateProductCount(product_Id, count) {
-        return axios.put(
-            `https://ecommerce.routemisr.com/api/v1/cart/${product_Id}`,
-            { count: count },
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.put(
+                `https://ecommerce.routemisr.com/api/v1/cart/${product_Id}`,
+                { count: count },
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] updateProductCount failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     async function onlinePayment(cartId, shippingAddress) {
         const url = `${window.location.protocol}//${window.location.host}`;
-        return axios.post(
-            `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${url}`,
-            { shippingAddress: shippingAddress },
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.post(
+                `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${url}`,
+                { shippingAddress: shippingAddress },
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] onlinePayment failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     async function cashPayment(cartId, shippingAddress) {
-        return axios.post(
-            `https://ecommerce.routemisr.com/api/v1/orders/${cartId}`,
-            { shippingAddress: shippingAddress },
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.post(
+                `https://ecommerce.routemisr.com/api/v1/orders/${cartId}`,
+                { shippingAddress: shippingAddress },
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] cashPayment failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     async function removeCart() {
-        return axios.delete(
-            `https://ecommerce.routemisr.com/api/v1/cart`,
-            { headers: getHeaders() }
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.delete(
+                `https://ecommerce.routemisr.com/api/v1/cart`,
+                { headers: getHeaders() }
+            );
+        } catch (error) {
+            console.error('[CartContext] removeCart failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     async function getLoggedUserOrders(userId) {
-        return axios.get(
-            `https://ecommerce.routemisr.com/api/v1/orders/user/${userId}`
-        ).then((res) => res).catch((error) => error);
+        try {
+            return await axios.get(
+                `https://ecommerce.routemisr.com/api/v1/orders/user/${userId}`
+            );
+        } catch (error) {
+            console.error('[CartContext] getLoggedUserOrders failed:', error.response?.data?.message || error.message);
+            return error;
+        }
     }
 
     // Fetch cart + wishlist on app load so counters are correct after refresh
