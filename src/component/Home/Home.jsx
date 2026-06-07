@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react'
 import ShowComponent from '../ShowCompnent/ShowComponent'
 import CategoriesSlider from '../CategoriesSlider/CategoriesSlider'
 import MainSlider from '../MainSlider/MainSlider'
+import { usePageTitle } from '../../Hooks/usePageTitle'
 
 export default function Home() {
-    useEffect(() => {
-        document.title = 'Home'
-    }, [])
+    usePageTitle('Home');
 
     return <>
         <MainSlider />
